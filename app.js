@@ -16,8 +16,8 @@ var app = express();
 
 app.set('port', process.env.PORT || 3000);
 app.set('views', __dirname + '/views');
-app.set('view engine', 'jade');
-app.use(favicon(__dirname + '/public/images/favicon.png'));
+app.set("view engine", "pug");
+app.use(favicon(__dirname + '/public/images/favicon.ico'));
 app.use(logger('dev'));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(methodOverride('_method'));
@@ -29,6 +29,16 @@ if (app.get('env') == 'development') {
 }
 
 app.get('/', routes.index);
+
+// Dynamic Render other Pug Pages
+app.get('/:id', function(req, res) {
+  res.render(req.params.id);
+});
+
+app.use(function(err, req, res, next) {
+  console.error(err.stack);
+  res.status(500).send('Something broke!');
+});
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log("Express server listening on port " + app.get('port'));
